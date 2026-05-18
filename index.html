@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Convite de Casamento - Ana & Daniel</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Georgia", serif;
+            background: linear-gradient(135deg, #faf3e0, #f6e1d3);
+            color: #4a3526;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .invitation {
+            width: min(800px, 90%);
+            padding: 40px;
+            border: 1px solid rgba(74, 53, 38, 0.15);
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 24px 60px rgba(74, 53, 38, 0.12);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .header .couple {
+            font-size: 2.5rem;
+            letter-spacing: 0.08em;
+            margin: 0;
+        }
+        .header .date {
+            margin: 12px 0 0;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #8a6e5c;
+        }
+        .message {
+            margin: 32px 0;
+            line-height: 1.9;
+            font-size: 1.05rem;
+            text-align: center;
+        }
+        .details {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            margin-top: 32px;
+        }
+        
+        /* Estilo para transformar os cards em links clicáveis */
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: transform 0.2s ease;
+        }
+        
+        .card-link:active {
+            transform: scale(0.98);
+        }
+
+        .detail-card {
+            padding: 24px;
+            border-radius: 20px;
+            background: #fbf4ed;
+            border: 1px solid rgba(138, 110, 92, 0.15);
+            height: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        
+        .detail-card:hover {
+            background: #f5eae1;
+        }
+
+        .detail-card h3 {
+            margin: 0 0 12px;
+            font-size: 1.1rem;
+            color: #7b5b47;
+        }
+        .detail-card p {
+            margin: 0;
+            line-height: 1.7;
+            color: #5d4434;
+        }
+        .footer {
+            margin-top: 36px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #7b5b47;
+        }
+    </style>
+</head>
+<body>
+    <article class="invitation">
+        <header class="header">
+            <p>Com alegria em nossos corações</p>
+            <h1 class="couple">Ana Carolina & Daniel</h1>
+            <p class="date">05 de Junho de 2026</p>
+        </header>
+
+        <section class="message">
+            <p>Convidamos calorosamente você para celebrar a cerimônia e a recepção do nosso casamento. Sua presença tornará este dia inesquecível.</p>
+        </section>
+
+        <section class="details">
+            <a href="https://www.google.com/maps/place/Hotel+Pousada+Haras+Est%C3%A2ncia+da+Serra/@-20.0267792,-51.5277179,7z/data=!4m13!1m2!2m1!1sest%C3%A2ncia+da+serra!3m9!1s0x94bb61970b04fe8f:0x708c6b24490f064f!5m2!4m1!1i2!8m2!3d-19.9358147!4d-48.943261!15sChJlc3TDom5jaWEgZGEgc2VycmGSAQVob3RlbOABAA!16s%2Fg%2F11j384zlrc?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="card-link">
+                <div class="detail-card">
+                    <h3>Local 📍</h3>
+                    <p>BR 153, KM 197 Zona Rural<br>Frutal - MG</p>
+                    <small style="color: #8a6e5c;">Clique para abrir o Mapa</small>
+                </div>
+            </a>
+
+            <a href="lista.html" class="card-link">
+                <div class="detail-card">
+                    <h3>Lista de Presentes 🎁</h3>
+                    <p>Clique para ver nossas sugestões e PIX.</p>
+                </div>
+            </a>
+
+            <div class="detail-card">
+                <h3>RSVP</h3>
+                <p>Confirmar até 01 de junho:<br />(17) 98110-6679</p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Esperamos por você!</p>
+        </footer>
+    </article>
+</body>
+</html>
