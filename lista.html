@@ -128,19 +128,9 @@
 
 <script type="module">
     // 1. Importações corrigidas: Adicionamos o getDatabase, ref, onValue e update
+    import {firebaseConfig} from './config.js';
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-    // Seu Firebase Config (use a sua chave nova aqui)
-    const firebaseConfig = {
-        apiKey: "AIzaSyBGlpqnTfsOc0n4vJDeOA2wcCel8bDBGyI",
-        authDomain: "panelaanaedani.firebaseapp.com",
-        databaseURL: "https://panelaanaedani-default-rtdb.firebaseio.com",
-        projectId: "panelaanaedani",
-        storageBucket: "panelaanaedani.firebasestorage.app",
-        messagingSenderId: "726922549771",
-        appId: "1:726922549771:web:10c943df7fbb0ac642850e"
-    };
 
     // 2. Inicialização do Firebase e do DATABASE (Essencial!)
     const app = initializeApp(firebaseConfig);
