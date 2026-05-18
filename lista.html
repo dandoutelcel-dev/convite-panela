@@ -127,28 +127,24 @@
 </div>
 
 <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+    // 1. Importações corrigidas: Adicionamos o getDatabase, ref, onValue e update
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyBGlpqnTfsOc0n4vJDeOA2wcCel8bDBGyI",
-    authDomain: "panelaanaedani.firebaseapp.com",
-    databaseURL: "https://panelaanaedani-default-rtdb.firebaseio.com",
-    projectId: "panelaanaedani",
-    storageBucket: "panelaanaedani.firebasestorage.app",
-    messagingSenderId: "726922549771",
-    appId: "1:726922549771:web:10c943df7fbb0ac642850e",
-    measurementId: "G-LX4MK2P17N"
-  };
+    // Seu Firebase Config (use a sua chave nova aqui)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBGlpqnTfsOc0n4vJDeOA2wcCel8bDBGyI",
+        authDomain: "panelaanaedani.firebaseapp.com",
+        databaseURL: "https://panelaanaedani-default-rtdb.firebaseio.com",
+        projectId: "panelaanaedani",
+        storageBucket: "panelaanaedani.firebasestorage.app",
+        messagingSenderId: "726922549771",
+        appId: "1:726922549771:web:10c943df7fbb0ac642850e"
+    };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+    // 2. Inicialização do Firebase e do DATABASE (Essencial!)
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
     const itens = [
         "Almofadas", "Cesto de roupas", "Cobre leito (Tam. Queen)", "Edredom (Tam. Queen)", "Fronhas", "Lençóis (Tam. Queen)", "Protetor de colchão (Tam. Queen)", "Tábua de passar roupa",
@@ -189,7 +185,7 @@
         });
     });
 
-    // Funções do Modal
+    // Funções do Modal (Globais para o HTML enxergar)
     window.openModal = (nome) => {
         itemSelecionado = nome;
         document.getElementById('modalTitle').innerText = nome;
@@ -205,22 +201,19 @@
     window.submitChoice = () => {
         const nomeConvidado = inputNome.value.trim();
         
-        // 1. Verifica se está vazio
         if (!nomeConvidado) {
             alert("Por favor, digite seu nome.");
             return;
         }
 
-        // 2. Validação CORRIGIDA: Aceita letras (com acentos e ç) e espaços. Mínimo 3 letras.
         const apenasLetras = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]{3,}$/;
         if (!apenasLetras.test(nomeConvidado)) {
-            alert("Por favor, digite um nome válido (apenas letras, sem números ou símbolos).");
+            alert("Por favor, digite um nome válido (apenas letras).");
             return;
         }
 
-        // 3. Exige sobrenome (obriga a ter pelo menos um espaço no meio do texto)
         if (!nomeConvidado.includes(" ")) {
-            alert("Por favor, insira nome e sobrenome para sabermos exatamente quem é.");
+            alert("Por favor, insira nome e sobrenome.");
             return;
         }
 
