@@ -125,12 +125,12 @@
 </div>
 
 <script type="module">
-    // 1. Importações corrigidas: Adicionamos o getDatabase, ref, onValue e update
-    import {firebaseConfig} from './config_pad.js';
+    // 1. IMPORTAÇÃO CORRIGIDA: Alterado de firebase-analytics para firebase-database
+    import { firebaseConfig } from './config_pad.js';
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
-    // 2. Inicialização do Firebase e do DATABASE (Essencial!)
+    // 2. Inicialização do Firebase e do Realtime Database
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
@@ -168,7 +168,7 @@
         });
     });
 
-    // Funções do Modal (Globais para o HTML enxergar)
+    // Funções do Modal expostas no escopo global (window)
     window.openModal = (nome) => {
         itemSelecionado = nome;
         document.getElementById('modalTitle').innerText = nome;
@@ -201,10 +201,16 @@
         }
 
         const id = itemSelecionado.replace(/[^a-zA-Z0-9]/g, '_');
-        update(ref(db, 'presentes/' + id), {
+        
+        // Ajuste estrutural usando update na raiz de 'presentes'
+        const atualizacao = {};
+        atualizacao[id] = {
             nome: nomeConvidado,
             data: new Date().toISOString()
-        }).then(() => {
+        };
+
+        update(ref(db, 'presentes'), atualizacao)
+        .then(() => {
             closeModal();
         }).catch((error) => {
             alert("Erro ao salvar: " + error.message);
