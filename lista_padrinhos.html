@@ -127,9 +127,8 @@
 <script type="module">
     // 1. IMPORTAÇÃO CORRIGIDA: Alterado de firebase-analytics para firebase-database
     import { firebaseConfig } from './config_pad.js';
-    import { initializeApp } from "firebase/app";
-    import { getAnalytics } from "firebase/analytics";
-
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
     // 2. Inicialização do Firebase e do Realtime Database
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
