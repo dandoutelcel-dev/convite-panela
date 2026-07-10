@@ -1,4 +1,4 @@
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyDJQsvYSUhDWEw8vpEemrqQXZu8anKeFUA",
     authDomain: "padrinhos-c2754.firebaseapp.com",
     databaseURL: "https://padrinhos-c2754-default-rtdb.firebaseio.com",
