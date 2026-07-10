@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Presentes dos Padrinhos - Ana & Daniel</title>
+    <style>
+        body { font-family: "Georgia", serif; background: linear-gradient(135deg, #faf3e0, #f6e1d3); color: #4a3526; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { background: white; padding: 30px; border-radius: 24px; width: min(700px, 100%); box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        
+        h2 { color: #7b5b47; margin-bottom: 10px; }
+        .subtitle { margin-bottom: 30px; font-style: italic; color: #8a6e5c; }
+
+        .gift-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 12px; 
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .gift-item {
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            background: #fbf4ed;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .gift-item:hover:not(.taken) {
+            border-color: #7b5b47;
+            background: #f5eae1;
+            transform: translateY(-2px);
+        }
+
+        /* Estilo para item já escolhido */
+        .gift-item.taken {
+            background: #f0f0f0;
+            cursor: not-allowed;
+            border-color: #ddd;
+        }
+        .gift-item.taken .item-name {
+            text-decoration: line-through;
+            color: #999;
+        }
+        .chosen-by {
+            font-size: 0.75rem;
+            color: #7b5b47;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        /* Modal de Confirmação */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: min(400px, 90%);
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .btn-group { display: flex; gap: 10px; justify-content: center; }
+        button {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .btn-confirm { background: #7b5b47; color: white; }
+        .btn-cancel { background: #eee; color: #666; }
+
+        .pix-box { background: #fbf4ed; padding: 15px; border-radius: 15px; border: 1px dashed #7b5b47; margin: 20px 0; }
+        .back-btn { text-decoration: none; color: #7b5b47; border: 1px solid #7b5b47; padding: 10px 20px; border-radius: 50px; display: inline-block; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Sugestões de Presentes</h2>
+    <p class="subtitle">Clique em um item para avisar que você o escolheu!</p>
+
+    <div class="gift-grid" id="grid">
+        </div>
+
+    <div class="pix-box">
+        <strong>Também aceitamos contribuição via PIX:</strong><br>
+        <span style="font-size: 1.1rem; font-weight: bold;">(34) 99979-2227</span><br>
+        <small>Ana Carolina - Banco Sicoob</small>
+    </div>
+</div>
+
+<div id="confirmModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle" style="color: #7b5b47; margin-top: 0;"></h3>
+        <p>Para confirmar, digite seu nome:</p>
+        <input type="text" id="userName" placeholder="Seu nome completo">
+        <div class="btn-group">
+            <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+            <button class="btn-confirm" onclick="submitChoice()">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    // 1. Importações corrigidas: Adicionamos o getDatabase, ref, onValue e update
+    import {firebaseConfig} from './config_pad.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
+
+    // 2. Inicialização do Firebase e do DATABASE (Essencial!)
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const itens = [
+        "Cama e Colchão (Queen)", "Depurador", "Fogão", "Geladeira", "Lava e Seca", 
+        "Micro-ondas", "Panificadora", "PlayStation 5 (vai que cola...)", "Purificador de Água/Filtro", "Robô Aspirador"
+    ];
+
+    let itemSelecionado = "";
+    const grid = document.getElementById('grid');
+    const modal = document.getElementById('confirmModal');
+    const inputNome = document.getElementById('userName');
+
+    // Escutar Banco de Dados
+    onValue(ref(db, 'presentes'), (snapshot) => {
+        const status = snapshot.val() || {};
+        grid.innerHTML = "";
+
+        itens.forEach(nome => {
+            const id = nome.replace(/[^a-zA-Z0-9]/g, '_');
+            const info = status[id];
+            
+            const div = document.createElement('div');
+            div.className = `gift-item ${info ? 'taken' : ''}`;
+            
+            div.innerHTML = `
+                <span class="item-name">${nome}</span>
+                ${info ? `<span class="chosen-by">Escolhido por: ${info.nome}</span>` : ''}
+            `;
+
+            if (!info) {
+                div.onclick = () => openModal(nome);
+            }
+            grid.appendChild(div);
+        });
+    });
+
+    // Funções do Modal (Globais para o HTML enxergar)
+    window.openModal = (nome) => {
+        itemSelecionado = nome;
+        document.getElementById('modalTitle').innerText = nome;
+        modal.style.display = "flex";
+        inputNome.focus();
+    };
+
+    window.closeModal = () => {
+        modal.style.display = "none";
+        inputNome.value = "";
+    };
+
+    window.submitChoice = () => {
+        const nomeConvidado = inputNome.value.trim();
+        
+        if (!nomeConvidado) {
+            alert("Por favor, digite seu nome.");
+            return;
+        }
+
+        const apenasLetras = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]{3,}$/;
+        if (!apenasLetras.test(nomeConvidado)) {
+            alert("Por favor, digite um nome válido (apenas letras).");
+            return;
+        }
+
+        if (!nomeConvidado.includes(" ")) {
+            alert("Por favor, insira nome e sobrenome.");
+            return;
+        }
+
+        const id = itemSelecionado.replace(/[^a-zA-Z0-9]/g, '_');
+        update(ref(db, 'presentes/' + id), {
+            nome: nomeConvidado,
+            data: new Date().toISOString()
+        }).then(() => {
+            closeModal();
+        }).catch((error) => {
+            alert("Erro ao salvar: " + error.message);
+        });
+    };
+</script>
+
+</body>
+</html>
